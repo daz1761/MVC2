@@ -88,7 +88,8 @@ namespace MVC2.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        [ActionName("Edit")]
+        public ActionResult Edit_Get(int id)
         {
             EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
             Employee employee = employeeBusinessLayer.Employees.Single(emp => emp.ID == id);
@@ -96,38 +97,64 @@ namespace MVC2.Controllers
             return View(employee);
         }
 
-        [HttpPost]
-        public ActionResult Edit(Employee employee)
-        {
-
-            if(ModelState.IsValid)
-            {
-                EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
-                employeeBusinessLayer.SaveEmployee(employee);
-
-                return RedirectToAction("Index");
-            }
-            
-            return View(employee);
-        }
-
         //[HttpPost]
-        //[ActionName("Create")]
-        //public ActionResult Create_Post()
+        //public ActionResult Edit(Employee employee)
         //{
-        //    Employee employee = new Employee();
-        //    UpdateModel(employee);
 
         //    if(ModelState.IsValid)
         //    {
         //        EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
-        //        employeeBusinessLayer.AddEmployee(employee);
+        //        employeeBusinessLayer.SaveEmployee(employee);
+
+        //        return RedirectToAction("Index");
+        //    }
+            
+        //    return View(employee);
+        //}
+
+        //[HttpPost]
+        //[ActionName("Edit")]
+        //public ActionResult Edit_Post(int id)
+        //{
+
+        //    EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
+        //    Employee employee = employeeBusinessLayer.Employees.Single(emp => emp.ID == id);
+
+        //    // overloaded version (include) so we can specify what is binded from the form data (see Fiddler)
+        //    // this is WHITE LISTING
+        //    //UpdateModel(employee, new string[] { "ID", "Gender", "City", "DateOfBirth" });
+
+        //    // overloaded version (exclude) so we can specify what is NOT binded from the form data (see Fiddler)
+        //    // this is BLACK LISTING
+        //    UpdateModel(employee, null, null, new string[] { "Name" });
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        employeeBusinessLayer.SaveEmployee(employee);
 
         //        return RedirectToAction("Index");
         //    }
 
-        //    return View();
-
+        //    return View(employee);
         //}
+
+        [HttpPost]
+        [ActionName("Edit")]
+        public ActionResult Edit_Post([Bind(Include ="Id, Gender, City, DateOfBirth")]Employee employee)
+        {
+
+            EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
+            employee.Name = employeeBusinessLayer.Employees.Single(emp => emp.ID == employee.ID).Name;
+
+            if (ModelState.IsValid)
+            {
+                employeeBusinessLayer.SaveEmployee(employee);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(employee);
+        }
+
     }
 }
