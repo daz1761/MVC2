@@ -138,13 +138,34 @@ namespace MVC2.Controllers
         //    return View(employee);
         //}
 
+        //[HttpPost]
+        //[ActionName("Edit")]
+        //public ActionResult Edit_Post([Bind(Include ="Id, Gender, City, DateOfBirth")]Employee employee)
+        //{
+
+        //    EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
+        //    employee.Name = employeeBusinessLayer.Employees.Single(emp => emp.ID == employee.ID).Name;
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        employeeBusinessLayer.SaveEmployee(employee);
+
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(employee);
+        //}
+
         [HttpPost]
         [ActionName("Edit")]
-        public ActionResult Edit_Post([Bind(Include ="Id, Gender, City, DateOfBirth")]Employee employee)
+        public ActionResult Edit_Post(int id)
         {
 
             EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
-            employee.Name = employeeBusinessLayer.Employees.Single(emp => emp.ID == employee.ID).Name;
+            Employee employee = employeeBusinessLayer.Employees.Single(emp => emp.ID == id);
+
+            // this will only update the properties that are present in the IEmployee interface
+            UpdateModel<IEmployee>(employee);
 
             if (ModelState.IsValid)
             {
@@ -155,6 +176,17 @@ namespace MVC2.Controllers
 
             return View(employee);
         }
+
+        // GET REQUEST - not recommended by microsoft as someone could put the DELETE path in an <img> tag or an <a> tag
+        public ActionResult Delete(int id)
+        {
+            EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
+            employeeBusinessLayer.DeleteEmployee(id);
+
+            return RedirectToAction("Index");
+        }
+
+        // POST REQUEST is safer
 
     }
 }
