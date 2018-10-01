@@ -178,6 +178,17 @@ namespace MVC2.Controllers
         }
 
         // GET REQUEST - not recommended by microsoft as someone could put the DELETE path in an <img> tag or an <a> tag
+        // when we don't decorate a method with an attribute, it is automatically a HTTPGET request
+        //public ActionResult Delete(int id)
+        //{
+        //    EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
+        //    employeeBusinessLayer.DeleteEmployee(id);
+
+        //    return RedirectToAction("Index");
+        //}
+
+        // POST REQUEST is safer
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             EmployeeBusinessLayer employeeBusinessLayer = new EmployeeBusinessLayer();
@@ -185,8 +196,6 @@ namespace MVC2.Controllers
 
             return RedirectToAction("Index");
         }
-
-        // POST REQUEST is safer
 
     }
 }
